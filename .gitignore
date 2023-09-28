@@ -1,0 +1,10 @@
+.idea/
+build/
+libs/
+cmake-*/
+simulations/
+.vscode/
+__pycache__/
+cmake_install.cmake
+*.pdf
+logs/

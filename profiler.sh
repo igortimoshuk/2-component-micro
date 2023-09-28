@@ -1,0 +1,1 @@
+sudo $(which nvprof) $1

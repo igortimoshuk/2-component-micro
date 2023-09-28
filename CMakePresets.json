@@ -1,0 +1,206 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "FALSE",
+        "CMAKE_VERBOSE_MAKEFILE": "FALSE",
+        "CMAKE_MESSAGE_LOG_LEVEL": "STATUS",
+        "CMAKE_MODULE_PATH": "${sourceDir}/cmake/modules",
+        "CMAKE_C_STANDARD": "17",
+        "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_CXX_STANDARD_REQUIRED": "TRUE",
+        "CMAKE_CXX_EXTENSIONS": "FALSE",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "TRUE",
+        "THREADS_PREFER_PTHREAD_FLAG": "TRUE",
+        "CMAKE_CXX_FLAGS": "-g -fdiagnostics-color=always -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS_DEBUG": "-O0 -g3 -ggdb -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fno-omit-frame-pointer",
+        "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-Og -g3 -ggdb -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fno-omit-frame-pointer",
+        "CMAKE_C_FLAGS": "-g -fdiagnostics-color=always",
+        "CMAKE_C_FLAGS_DEBUG": "-O0 -g3 -ggdb -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fno-omit-frame-pointer",
+        "CMAKE_C_FLAGS_RELWITHDEBINFO": "-Og -g3 -ggdb  -fstack-protector-strong -D_FORTIFY_SOURCE=2 -fno-omit-frame-pointer",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "TRUE",
+        "CMAKE_CUDA_FLAGS": "-Xcompiler -fdiagnostics-color=always --expt-relaxed-constexpr -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored",
+        "CMAKE_CUDA_ARCHITECTURES": "70;75;80;86",
+        "CMAKE_CUDA_SEPARABLE_COMPILATION": "TRUE",
+        "CMAKE_CUDA_HOST_COMPILER": "g++-10"
+
+      },
+      "environment": {
+        "NINJA_STATUS": "[run %r|beg %s|fin %f|tot %t|rate %o|time %e]:"
+      }
+    },
+
+    {
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "hidden": true,
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "TRUE",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_VERBOSE_MAKEFILE": "TRUE",
+        "CMAKE_MESSAGE_LOG_LEVEL": "VERBOSE"
+      },
+      "environment": {
+        "VERBOSE": "1"
+      }
+    },
+    {
+      "name": "native",
+      "inherits": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_RELEASE": "-O3 -DNDEBUG -march=native -mtune=native",
+        "CMAKE_C_FLAGS_RELEASE": "-O3 -DNDEBUG -march=native -mtune=native",
+        "CMAKE_CUDA_FLAGS_RELEASE": "-O3 -DNDEBUG -g -Xcompiler -march=native -Xcompiler -mtune=native"
+      }
+    },
+    {
+      "name": "haswell",
+      "inherits": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_RELEASE": "-O3 -DNDEBUG -march=haswell -mtune=haswell",
+        "CMAKE_C_FLAGS_RELEASE": "-O3 -DNDEBUG -march=haswell -mtune=haswell",
+        "CMAKE_CUDA_FLAGS_RELEASE": "-O3 -DNDEBUG -g -Xcompiler -march=haswell -Xcompiler -mtune=haswell"
+      }
+    },
+    {
+      "name": "gcc",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "gcc-12",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc-12",
+        "CMAKE_CXX_COMPILER": "g++-12"
+      }
+    },
+    {
+      "name": "clang-15",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-15",
+        "CMAKE_CXX_COMPILER": "clang++-15"
+      }
+    },
+    {
+      "name": "conan",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_PROJECT_TOP_LEVEL_INCLUDES": "${sourceDir}/cmake/conan_dependency_provider/conan_provider.cmake",
+        "CMAKE_FIND_PACKAGE_PREFER_CONFIG": "TRUE"
+      },
+      "environment": {
+        "PATH": "$env{HOME}/miniconda3/bin:$penv{PATH}"
+      }
+    },
+    {
+      "name": "release-native",
+      "displayName": "Release|march=native",
+      "inherits": [
+        "native",
+        "conan",
+        "release",
+        "default"
+      ]
+    },
+    {
+      "name": "release-haswell",
+      "displayName": "Release|march=haswell",
+      "inherits": [
+        "haswell",
+        "conan",
+        "release",
+        "default"
+      ]
+    },
+    {
+      "name": "debug-native",
+      "displayName": "Debug|march=native",
+      "inherits": [
+        "native",
+        "conan",
+        "debug",
+        "default"
+      ]
+    },
+    {
+      "name": "kraken",
+      "displayName": "Release|march=haswell",
+      "inherits": [
+        "release-haswell"
+      ],
+      "binaryDir": "${sourceDir}/build/Release"
+    },
+    {
+      "name": "kraken-debug",
+      "displayName": "Debug|march=haswell",
+      "inherits": [
+        "debug",
+        "kraken"
+      ],
+      "binaryDir": "${sourceDir}/build/Debug"
+    },
+    {
+      "name": "tetralith",
+      "displayName": "Release|march=native",
+      "inherits": [
+        "release-native",
+        "default"
+      ],
+      "binaryDir": "${sourceDir}/build/Release",
+      "cacheVariables": {
+        "CONAN_OPTIONS": "-o hdf5:shared=True"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release-native",
+      "configurePreset": "release-native"
+    },
+    {
+      "name": "release-haswell",
+      "configurePreset": "release-native"
+    },
+    {
+      "name": "debug-native",
+      "configurePreset": "debug-native"
+    },
+    {
+      "name": "kraken",
+      "configurePreset": "kraken"
+    },
+    {
+      "name": "kraken-debug",
+      "configurePreset": "kraken-debug"
+    },
+    {
+      "name": "tetralith",
+      "displayName": "Release|march=native",
+      "configurePreset": "tetralith",
+      "jobs": 16
+    }
+  ]
+}
