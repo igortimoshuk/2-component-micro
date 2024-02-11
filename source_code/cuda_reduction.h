@@ -10,7 +10,7 @@ namespace rdx{
 extern void sumArray(field2 *in, field2* out, int N);
 
 //Convergence check. USE BEFORE SWAPPING DELTA
-extern float checkConvergence(field2 *D, const field2* D_new, int N, std::string quantity = "Delta", bool print = true );
+extern float checkConvergence(const field2 *D, const field2* D_new, int N, std::string quantity = "Delta", bool print = true );
 
 //Convergence check for populations. USE BEFORE SWAPPING N
 extern float checkConvergence(field *n, const field* n_new, int N, std::string quantity = "N", bool print = true );

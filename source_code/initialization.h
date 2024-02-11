@@ -27,6 +27,7 @@ extern void importState2(field2 **h_D, field **h_n_up, field **h_n_down, field3 
 
 extern void addVortex(field2 *Initial_guess, const Hamiltonian &hamiltonian, field x0, field y0, field xi, int n);
 extern void addDomainWall(field2 *Initial_guess, const Hamiltonian &hamiltonian);
+extern void addDomainWallV(field2 *Initial_guess, const Hamiltonian &hamiltonian);
 extern void setUniform(field2 *Initial_guess, const Hamiltonian &hamiltonian, const field amplitude, const field phase);
 
 }

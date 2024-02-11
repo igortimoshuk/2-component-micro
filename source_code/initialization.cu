@@ -190,7 +190,38 @@ void init::addDomainWall(field2 *Initial_guess, const Hamiltonian &hamiltonian)
             index = i + j*Nx + k*Nx*Ny;
 
             // smarter way to initialise a domain wall
+            //if(y<0) Initial_guess[index].x *= -1.0;
             if(y<0) Initial_guess[index].y *= -1.0;
+            
+            }
+        }   
+    }
+}
+
+void init::addDomainWallV(field2 *Initial_guess, const Hamiltonian &hamiltonian)
+{
+    const int Nx = hamiltonian.Nx;
+    const int Ny = hamiltonian.Ny;
+    const int Nz = hamiltonian.Nz;
+
+    int index;
+    field x,y,z;
+    for(int k=0; k<Nz; ++k)
+    {
+        for(int j=0; j<Ny; ++j)
+        {
+		    for(int i=0; i<Nx; ++i)
+            {
+
+			x = (field) 2*( i - Nx/2 )/Nx;
+            y = (field) 2*( j - Ny/2 )/Ny;
+            z = (field) 2*( k - Nz/2 )/Nz;
+            //Our index convention
+            index = i + j*Nx + k*Nx*Ny;
+
+            // smarter way to initialise a domain wall
+            if(x<0.05) Initial_guess[index].x *= -1.0;
+            if(x<0.05) Initial_guess[index].y *= -1.0;
             
             }
         }   

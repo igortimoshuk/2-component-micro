@@ -37,6 +37,7 @@ parser.add_argument('-maxiter', '--maxiter', help='Maximal iterations', default=
 parser.add_argument('-trsbdev', '--trsbdev', help='0: s+is; 1 s++-; -2 s+++', default="0")
 parser.add_argument("-hartree", action="store_true", help="Hartree term activation", default=False)
 parser.add_argument("-gauge", action="store_true", help="Gauge field term activation", default=False)
+parser.add_argument("-memory_par", "--memory_par", help="Update delta step", default="0.5")
 
 # if ig="skyrmion"
 parser.add_argument('-r', '--r', help='Radius of the skyrmion', default="0.4")
@@ -61,6 +62,7 @@ N2             = str(args.n2)
 R2             = str(args.r2)
 Nf1            = str(args.nf1)
 Nf2            = str(args.nf2)
+memory_par     = str(args.memory_par)
 
 
 
@@ -73,17 +75,17 @@ T_c = 0.45974743
 # SYSTEM PARAMETERS SETUP
 @dataclass
 class Hamiltonian:
-    t_x    = np.array( [-1.0,-1.0] )
-    t_y    = np.array( [-1.0,-1.0] )
+    t_x    = np.array( [ 1.0, 1.0] )
+    t_y    = np.array( [ 1.0, 1.0] )
     t_z    = np.array( [-0.0,-0.0] )
     mu     = np.array( [ 0.0, 0.0] )
     H      = np.array( [ 0.0, 0.0] )
-    V      = np.array( [ 2.0, 2.5] ) # [V11,V22] v
-    Vint   = np.array( [-0.2] ) # [V12] u
+    V      = np.array( [ 3.2, 2.2] ) # [V11,V22] v
+    Vint   = np.array( [-0.05] ) # [V12] u
     #common parameters
-    T      = 0.65*T_c
-    q      = 0.15
-    Bext   = 0.00
+    T      = 0.5*T_c
+    q      = 0.25
+    Bext   = 0.0
     
 
 
@@ -99,7 +101,8 @@ header_list = [ "#!/bin/bash -l",
                 "#SBATCH --gres=gpu:1",
                 "#SBATCH --time=72:00:00",
                 "#SBATCH --qos=gpu",
-                "#SBATCH --exclude=boltzmann",
+                "#SBATCH --exclude=boltzmann,alpha",
+#                "#SBATCH --nodelist=dirac",
                 "#SBATCH --clusters=kraken",
                 "#SBATCH --partition=gpu"]
 
@@ -136,7 +139,8 @@ run_list = ["./build/Release/polynomial_bdg",
         "-r2="        + R2,
         "-n2="        + N2, 
         "-nf1="       + Nf1,
-        "-nf2="       + Nf2]
+        "-nf2="       + Nf2, 
+        "-memory_par=" + memory_par]
 
 # Writing the runfile
 run_file.writelines([ "\n".join(header_list) , "\n\n" , " ".join(run_list) ])

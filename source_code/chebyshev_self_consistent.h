@@ -13,7 +13,7 @@ extern void selfConsistent(
     //field2 *h_D_3, field *h_n_up_3, field *h_n_down_3, field2 *h_T_x_3, field2 *h_T_y_3, field2 *h_T_z_3,
     const size_t SIZE_N_REAL, const size_t SIZE_N, const size_t SIZE_3N, const size_t SIZE_2N_XY,
     const int X_BLOCKS, const int TPB, const int Y_BLOCKS,
-    const int CHEB_ORDER, const int MAX_ITER, const float CONVERGED,
+    const int CHEB_ORDER, const int MAX_ITER, const float CONVERGED, const float memory_par,
     int &totalIter, field &convergenceDelta_1, field &convergenceDelta_2, //field &convergenceDelta_3,
     field &convergenceNup_1, field &convergenceNdown_1, field &convergenceNup_2, field &convergenceNdown_2, 
     //field &convergenceNup_3, field &convergenceNdown_3, 

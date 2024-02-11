@@ -20,6 +20,8 @@ parser.add_argument('-ig', '--ig', help='Initial guess (LO/uniform/vortex)', def
 parser.add_argument('-nv', '--nv', help='Number of vortex(es) winding', default="1")
 parser.add_argument('-x0', '--x0', help='x-position of the vortices [-1,1]', default="0.0")
 parser.add_argument('-y0', '--y0', help='y-position of the vortices [-1,1]', default="0.0")
+parser.add_argument('-nf1', '--nf1', help='Number of vortices in first component', default="1")
+parser.add_argument('-nf2', '--nf2', help='Number of vortices in second component', default="0")
 # Convergence parameters
 parser.add_argument('-convergence', '--convergence', help="Gaps convergence value", default="1.0e-6")
 parser.add_argument('-maxiter', '--maxiter', help='Maximal iterations', default="10000")
@@ -54,7 +56,9 @@ GAUGE_FIELD = str(int(args.gauge))
 R              = str(args.r)
 N2             = str(args.n2)
 R2             = str(args.r2)
-W2             = str(args.w2)
+#W2             = str(args.w2)
+Nf1            = str(args.nf1)
+Nf2            = str(args.nf2)
 
 
 ################################
@@ -67,32 +71,32 @@ T_c = 0.45974743
 @dataclass
 class Hamiltonian:
     #Convention [ band#1, band#2]
-    t_x    = np.array( [-1.0,-1.0,-1.0] )
-    t_y    = np.array( [-1.0,-1.0,-1.0] )
-    t_z    = np.array( [-0.0,-0.0,-0.0] )
-    mu     = np.array( [ 0.0, 0.0, 0.0] )
-    H      = np.array( [ 0.0, 0.0, 0.0] )
-    V      = np.array( [ 2.0, 2.0, 2.0] ) # v
-    Vint   = np.array( [-1.0, -1.0 , -1.0] ) # u
+    t_x    = np.array( [-1.0,-1.0] )
+    t_y    = np.array( [-1.0,-1.0] )
+    t_z    = np.array( [-0.0,-0.0] )
+    mu     = np.array( [ 0.0, 0.0] )
+    H      = np.array( [ 0.0, 0.0] )
+    V      = np.array( [ 2.0, 2.0] ) # v
+    Vint   = np.array( [-0.02] ) # u
     #common parameters
-    T      = 0.5* T_c
-    q      = 0.15
+    T      = 0.35* T_c
+    q      = 0.15 * 3
     Bext   = 0.00
 
 # SELECT HERE THE PARAMETERS TO SPAN OVER
 
-p_NAME  = "N"
-p_start = 0.144444
-p_end   = 0.411111
-p_N     = 7
+p_NAME  = "Vint"
+p_start = 0.0024
+p_end   = 0.01
+p_N     = 6
 
 ################################
 
 hamiltonian = Hamiltonian()
-# p = np.linspace(p_start,p_end, p_N)
+p = np.linspace(p_start,p_end, p_N)
 # Create simulation folder 
-p = np.array([60,80])
-p_N = len(p)
+#p = np.array([60,80])
+#p_N = len(p)
 
 if not os.path.isdir("./simulations/" + FOLDER_NAME):
     os.mkdir("./simulations/" + FOLDER_NAME)
@@ -115,10 +119,10 @@ for i in range(p_N):
     ########## PARAMETER TO BE CHANGED ##########
     # hamiltonian.q =  p[i]
     # hamiltonian.V      = np.array( [ 3.0 - p[i] , 3.0 - p[i] , 3.0 - p[i] ] ) # v
-    # hamiltonian.Vint   = np.array( [-p[i], -p[i] , -p[i]] ) # u
+    hamiltonian.Vint   = np.array( [-p[i]] ) # u
     # NV = str( int( p[i] ) )
-    Nx = str(p[i])
-    Ny = str(p[i])
+    #Nx = str(p[i])
+    #Ny = str(p[i])
     #############################################
     
     
@@ -131,7 +135,7 @@ for i in range(p_N):
                 "#SBATCH --gres=gpu:1",
                 "#SBATCH --time=48:00:00",
                 "#SBATCH --qos=gpu",
-                "#SBATCH --exclude=boltzmann,kraken"
+                "#SBATCH --exclude=boltzmann,alpha",
                 "#SBATCH --clusters=kraken",
                 "#SBATCH --partition=gpu"
                 ]
@@ -151,25 +155,17 @@ for i in range(p_N):
         "-gauge="     + GAUGE_FIELD,
         "-t1x="       + str(hamiltonian.t_x[0]),
         "-t2x="       + str(hamiltonian.t_x[1]),
-        "-t3x="       + str(hamiltonian.t_x[2]),
         "-t1y="       + str(hamiltonian.t_y[0]),
         "-t2y="       + str(hamiltonian.t_y[1]),
-        "-t3y="       + str(hamiltonian.t_y[2]),
         "-t1z="       + str(hamiltonian.t_z[0]),
         "-t2z="       + str(hamiltonian.t_z[1]),
-        "-t3z="       + str(hamiltonian.t_z[2]),
         "-mu1="       + str(hamiltonian.mu[0]),
         "-mu2="       + str(hamiltonian.mu[1]),
-        "-mu3="       + str(hamiltonian.mu[2]),
 		"-H1="        + str(hamiltonian.H[0]),
 		"-H2="        + str(hamiltonian.H[1]),
-        "-H3="        + str(hamiltonian.H[2]),
 		"-V1="        + str(hamiltonian.V[0]),
 		"-V2="        + str(hamiltonian.V[1]),
-        "-V3="        + str(hamiltonian.V[2]),
         "-V12="       + str(hamiltonian.Vint[0]),
-        "-V13="       + str(hamiltonian.Vint[1]),
-        "-V23="       + str(hamiltonian.Vint[2]),
 		"-T="         + str(hamiltonian.T),
         "-Bext="      + str(hamiltonian.Bext),
         "-q="         + str(hamiltonian.q),
@@ -177,7 +173,8 @@ for i in range(p_N):
         "-r="         + R,
         "-r2="        + R2,
         "-n2="        + N2,
-        "-w2="        + W2]
+        "-nf1="       + Nf1,
+        "-nf2="       + Nf2]
     
     # Writing the runfile
     run_file.writelines([ "\n".join(header_list) , "\n\n" , " ".join(run_list) ])

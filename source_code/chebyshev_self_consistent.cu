@@ -472,6 +472,18 @@ void init_e(field2 *Q_prev, field2 *Q_n, int N, int site_offset)
     Q_prev[id + N]  = {0.0,0.0};
 }
 
+__global__
+void update_Delta(field2 *d_D, field2 *d_D_new, const float m, const int N)
+{
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if(idx >= N) return;
+
+    //field2 d_D_temp = d_D_new[idx];
+
+    d_D_new[idx].x = m * d_D[idx].x + (1.0 - m) * d_D_new[idx].x;
+    d_D_new[idx].y = m * d_D[idx].y + (1.0 - m) * d_D_new[idx].y;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -595,9 +607,9 @@ void modkernel(field *modulation, const int N, const Hamiltonian hamiltonian)
    // modulation[idx] = 0.0;
    // }
 
-    if( (x > -0.3 &&  x<0.3) && ( y > -0.3 && y < 0.3 ) )
+    if( (x > -4.0/Nx  &&  x < 4.0/Nx) && ( y > -4.0/Ny && y < 4.0/Ny ) )
     {
-    modulation[idx] = 0.0 ;
+    modulation[idx] = 2.0 ;
     }
     else
     {
@@ -619,7 +631,7 @@ void mean_field::selfConsistent(
     //field2 *h_D_3, field *h_n_up_3, field *h_n_down_3, field2 *h_T_x_3, field2 *h_T_y_3, field2 *h_T_z_3,
     const size_t SIZE_N_REAL, const size_t SIZE_N, const size_t SIZE_3N, const size_t SIZE_2N_XY,
     const int X_BLOCKS, const int TPB, const int Y_BLOCKS,
-    const int CHEB_ORDER, const int MAX_ITER, const float CONVERGED,
+    const int CHEB_ORDER, const int MAX_ITER, const float CONVERGED, const float memory_par,
     int &totalIter, field &convergenceDelta_1, field &convergenceDelta_2, //field &convergenceDelta_3,
     field &convergenceNup_1, field &convergenceNdown_1, field &convergenceNup_2, field &convergenceNdown_2, 
     //field &convergenceNup_3, field &convergenceNdown_3, 
@@ -968,6 +980,9 @@ void mean_field::selfConsistent(
         //convergenceDelta_3   = rdx::checkConvergence(d_D_3, d_Dnew_3, N, "Delta 3", PARTIAL_PRINT);
 
         // Self consistency
+        update_Delta<<<X_BLOCKS, TPB>>>(d_D_1, d_Dnew_1, memory_par, N);
+        update_Delta<<<X_BLOCKS, TPB>>>(d_D_2, d_Dnew_2, memory_par, N);
+        //update_Delta<<<X_BLOCKS, TPB>>>(d_D_3, d_Dnew_3, memory_par, N);
         array::swap(&d_D_1, &d_Dnew_1);
         array::swap(&d_D_2, &d_Dnew_2);
         //array::swap(&d_D_3, &d_Dnew_3);

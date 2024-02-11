@@ -132,6 +132,8 @@ int main(int argc,char* argv[])
     // Pairing potential variation
     const float variation = (float)input::parse_arg_d(argc,argv,"-variation", 0.0);
 
+    // Delta memory parameter
+    const float memory_par = (float)input::parse_arg_d(argc,argv,"-memory_par", 0.0);
 
     //Set Chebyshev expansion order
     const int CHEB_ORDER_DEFAULT = 1000;
@@ -216,10 +218,31 @@ int main(int argc,char* argv[])
             init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
             init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
 
-            init::addVortex(h_D_1, hamiltonian, 0.0, 0.0, 0.05, 1);
-
             init::addDomainWall(h_D_2, hamiltonian);
             //init::addDomainWall(h_D_1, hamiltonian);
+
+            init::addVortex(h_D_1, hamiltonian, 0.0, 0.0, 2.5, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "ddwfv")
+        {
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addDomainWall(h_D_2, hamiltonian);
+            init::addDomainWallV(h_D_2, hamiltonian);
+
+            init::addVortex(h_D_1, hamiltonian, 0.0, 0.0, 2.5, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "fv")
+        {
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, 0.0, 0.0, 2.5, 1);
         }
 
         else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "fvortex")
@@ -301,7 +324,7 @@ int main(int argc,char* argv[])
        // h_D_3, h_n_up_3, h_n_down_3, h_T_x_3, h_T_y_3, h_T_z_3,
         SIZE_N_REAL, SIZE_N, SIZE_3N, SIZE_2N_XY,
         X_BLOCKS, TPB, Y_BLOCKS,
-        CHEB_ORDER, MAX_ITER, CONVERGED,
+        CHEB_ORDER, MAX_ITER, CONVERGED, memory_par,
         totalIter, convergenceDelta_1 , convergenceDelta_2, //convergenceDelta_3,
         convergenceNup_1, convergenceNdown_1, convergenceNup_2, convergenceNdown_2,
         //convergenceNup_3, convergenceNdown_3, 

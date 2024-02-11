@@ -89,7 +89,7 @@ __global__ void deviceReduceKernel(const field2 *in, field2* out, const int N) {
 
 /////////////////Modified summation kernel to estimate convergence///////////////
 //Output is save in D hence this function must be used BEFORE the swap
-__global__ void convergenceKernel(const field2 *D_new, field2* D, int N) {
+__global__ void convergenceKernel(field2 *D, const field2* D_new, int N) {
 
   field2 sum = {0.0,0.0};
   //reduce multiple elements per thread
@@ -267,17 +267,22 @@ void rdx::sumArray(field2 *in, field2* out, int N){
 
 
 //Convergence check. USE BEFORE SWAPPING DELTA
-float rdx::checkConvergence(field2 *D, const field2* D_new, int N, std::string quantity, bool print) {
-   
+float rdx::checkConvergence(const field2 *D, const field2* D_new, int N, std::string quantity, bool print) {
+
+    field2 *d_convergenceArray;
+    cudaMalloc(&d_convergenceArray, N*sizeof(field2));
+    cudaMemcpy(d_convergenceArray, D, N*sizeof(field2), cudaMemcpyDeviceToDevice);
+
     const int threads = 256;
     const int blocks = min((N + threads - 1) / threads, 1024);
   
     //Convergence kernel saves in D
-    convergenceKernel<<<blocks, threads>>>(D_new, D, N);
-    deviceReduceKernel<<<1, 1024>>>(D, D, blocks);
+    convergenceKernel<<<blocks, threads>>>(d_convergenceArray, D_new, N);
+    deviceReduceKernel<<<1, 1024>>>(d_convergenceArray, d_convergenceArray, blocks);
    
     field2 convergence;
-    cudaMemcpy(&convergence, D, sizeof(field2), cudaMemcpyDeviceToHost);
+    cudaMemcpy(&convergence, d_convergenceArray, sizeof(field2), cudaMemcpyDeviceToHost);
+    cudaFree(d_convergenceArray);
     float convergernceModulus = (float)sqrt(convergence.x*convergence.x + convergence.y*convergence.y);
    
     if(print){
