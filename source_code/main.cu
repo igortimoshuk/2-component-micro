@@ -236,6 +236,27 @@ int main(int argc,char* argv[])
             init::addVortex(h_D_1, hamiltonian, 0.0, 0.0, 2.5, 1);
         }
 
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "cluster")
+        {
+            float size = (float)input::parse_arg_d(argc, argv, "-size", 0.5);
+            float dist = (float)input::parse_arg_d(argc, argv, "-dist", 0.5);
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, -dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
+        }
+
         else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "fv")
         {
 

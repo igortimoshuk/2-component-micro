@@ -29,6 +29,8 @@ parser.add_argument('-Nx','--Nx', help='x-size of the system', required=True)
 parser.add_argument('-Ny','--Ny', help='y-size of the system', default="1")
 parser.add_argument('-ig', '--ig', help='Initial guess (vortex/dw/dwv)', default="uniform")
 parser.add_argument('-nv', '--nv', help='Number of vortices', default="1")
+parser.add_argument('-size', '--size', help='Number of vortices in first component', default="0.5")
+parser.add_argument('-dist', '--dist', help='Number of vortices in first component', default="0.5")
 parser.add_argument('-nf1', '--nf1', help='Number of vortices in first component', default="1")
 parser.add_argument('-nf2', '--nf2', help='Number of vortices in second component', default="0")
 parser.add_argument('-order', '--order', help="Chebyshev expansion order", default=500)
@@ -64,6 +66,8 @@ Nf1            = str(args.nf1)
 Nf2            = str(args.nf2)
 memory_par     = str(args.memory_par)
 
+size           = str(args.size)
+dist           = str(args.dist)
 
 
 ################################
@@ -80,11 +84,11 @@ class Hamiltonian:
     t_z    = np.array( [-0.0,-0.0] )
     mu     = np.array( [ 0.0, 0.0] )
     H      = np.array( [ 0.0, 0.0] )
-    V      = np.array( [ 3.2, 2.2] ) # [V11,V22] v
+    V      = np.array( [ 3.2, 1.8] ) # [V11,V22] v
     Vint   = np.array( [-0.05] ) # [V12] u
     #common parameters
     T      = 0.5*T_c
-    q      = 0.25
+    q      = 0.3
     Bext   = 0.0
     
 
@@ -140,6 +144,8 @@ run_list = ["./build/Release/polynomial_bdg",
         "-n2="        + N2, 
         "-nf1="       + Nf1,
         "-nf2="       + Nf2, 
+        "-size="      + size,
+        "-dist="      + dist, 
         "-memory_par=" + memory_par]
 
 # Writing the runfile

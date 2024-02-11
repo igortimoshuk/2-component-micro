@@ -840,7 +840,7 @@ void mean_field::selfConsistent(
   
 
     /// Modulation kernel
-    modkernel<<< X_BLOCKS, TPB >>> (d_modulation, N, hamiltonian);
+    ///modkernel<<< X_BLOCKS, TPB >>> (d_modulation, N, hamiltonian);
     cudaDeviceSynchronize();
     field *h_mod 	     = (field*)malloc(SIZE_N_REAL);
     cudaMemcpy(h_mod,d_modulation,SIZE_N_REAL, cudaMemcpyDeviceToHost);
