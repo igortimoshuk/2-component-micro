@@ -63,6 +63,8 @@ int main(int argc,char* argv[])
     int    *h_geometry = nullptr;
     field2 *h_A        = nullptr;
     field3 *h_J        = nullptr;
+    field3 *h_J_1      = nullptr;
+    field3 *h_J_2      = nullptr;
     field  *h_F        = nullptr;
 
     // Component 1
@@ -203,11 +205,15 @@ int main(int argc,char* argv[])
         if(h_geometry == nullptr) h_geometry         = (int*)malloc(N*sizeof(int));
         if(h_A        == nullptr) h_A                = (field2*)malloc(SIZE_N);
         if(h_J        == nullptr) h_J                = (field3*)malloc(SIZE_3N);
+        if(h_J_1      == nullptr) h_J_1              = (field3*)malloc(SIZE_3N);
+        if(h_J_2      == nullptr) h_J_2              = (field3*)malloc(SIZE_3N);
         if(h_F        == nullptr) h_F                = (field*)malloc(SIZE_N_REAL);
         
         memset(h_A, 0, SIZE_N);
         memset(h_F, 0, SIZE_N_REAL);
         memset(h_J, 0, SIZE_3N);
+        memset(h_J_1, 0, SIZE_3N);
+        memset(h_J_2, 0, SIZE_3N);
         //Construct and save system geometry
         
         geometry::setGeometry(h_geometry, hamiltonian, out_file);
@@ -253,6 +259,173 @@ int main(int argc,char* argv[])
             init::addVortex(h_D_1, hamiltonian, dist, -dist, size, 1);
             init::addVortex(h_D_2, hamiltonian, dist, -dist, size, 1);
 
+            init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "cluster3")
+        {
+            float size = (float)input::parse_arg_d(argc, argv, "-size", 0.5);
+            float dist = (float)input::parse_arg_d(argc, argv, "-dist", 0.5);
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2.5 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2.5 * dist, dist, size, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "cluster7")
+        {
+            float size = (float)input::parse_arg_d(argc, argv, "-size", 0.5);
+            float dist = (float)input::parse_arg_d(argc, argv, "-dist", 0.5);
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, -3 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -3 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2.5 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2.5 * dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, 0, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, 0, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, dist, size, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "cluster11")
+        {
+            float size = (float)input::parse_arg_d(argc, argv, "-size", 0.5);
+            float dist = (float)input::parse_arg_d(argc, argv, "-dist", 0.5);
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, -3 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -3 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2.5 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2.5 * dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, 0, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, 0, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 0, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 0, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, -0.5 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, -0.5 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -0.4 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -0.4 * dist, -dist, size, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "cluster19")
+        {
+            float size = (float)input::parse_arg_d(argc, argv, "-size", 0.5);
+            float dist = (float)input::parse_arg_d(argc, argv, "-dist", 0.5);
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, -3 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -3 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2.5 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2.5 * dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, 0, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, 0, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 2 * dist, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 2 * dist, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 0, dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 0, dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, dist, -0.5 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, dist, -0.5 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, 0.4 * dist, -0.3 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, 0.4 * dist, -0.3 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -0.4 * dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -0.4 * dist, -dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -0.7 * dist, -0.3 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -0.7 * dist, -0.3 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -1.7 * dist, 0.3 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -1.7 * dist, 0.3 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -1.7 * dist, 0.3 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -1.7 * dist, 0.3 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -1 * dist, 1.4 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -1 * dist, 1.4 * dist, size, 1);
+
+            init::addVortex(h_D_1, hamiltonian, -3 * dist, -2 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -3 * dist, -2 * dist, size, 1);
+            init::addVortex(h_D_1, hamiltonian, -0.7 * dist, 1.5 * dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -0.7 * dist, 1.5 * dist, size, 1);
+        }
+
+        else if(input::parse_arg_s(argc, argv, "-ig", "uniform") == "pair")
+        {
+            float size = (float)input::parse_arg_d(argc, argv, "-size", 0.5);
+            float dist = (float)input::parse_arg_d(argc, argv, "-dist", 0.5);
+
+            init::setUniform(h_D_1, hamiltonian, 0.1, - PI / 2 );
+            init::setUniform(h_D_2, hamiltonian, 0.1, PI / 2 );
+
+            init::addVortex(h_D_1, hamiltonian, -dist, -dist, size, 1);
+            init::addVortex(h_D_2, hamiltonian, -dist, -dist, size, 1);
+            
             init::addVortex(h_D_1, hamiltonian, dist, dist, size, 1);
             init::addVortex(h_D_2, hamiltonian, dist, dist, size, 1);
         }
@@ -339,7 +512,7 @@ int main(int argc,char* argv[])
    
     // // Iterations
     mean_field::selfConsistent(
-        h_geometry, hamiltonian, h_A, h_J, h_F,
+        h_geometry, hamiltonian, h_A, h_J, h_J_1, h_J_2, h_F,
         h_D_1, h_n_up_1, h_n_down_1, h_T_x_1, h_T_y_1, h_T_z_1,
         h_D_2, h_n_up_2, h_n_down_2, h_T_x_2, h_T_y_2, h_T_z_2,
        // h_D_3, h_n_up_3, h_n_down_3, h_T_x_3, h_T_y_3, h_T_z_3,
@@ -406,6 +579,8 @@ int main(int argc,char* argv[])
     free(h_A);
     free(h_geometry);
     free(h_J);
+    free(h_J_1);
+    free(h_J_2);
     free(h_F);
 }
 

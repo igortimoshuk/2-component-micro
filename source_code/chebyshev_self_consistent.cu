@@ -238,7 +238,7 @@ void update_J(
     //const field2 *t_x_3,const field2 *t_y_3, const field2 *t_z_3,
     const field2 *e_1, field2 *h_1, const field2 *e_2, field2 *h_2, 
     //const field2 *e_3, field2 *h_3, 
-    field3 *d_J,
+    field3 *d_J, field3 *d_J_1, field3 *d_J_2,
     const int *neighbor_list,
     const int N, const int Nx, const int Ny, const int Nz, const int site_offset,
     const field cheb_n)
@@ -311,6 +311,14 @@ void update_J(
         d_J[idx].y += cheb_n * 2 * (ty_1.x * h_1[d_up.y + N].y - ty_1.y * h_1[d_up.y + N].x)*isHoppingUp.y;
         d_J[idx].z += cheb_n * 2 * (tz_1.x * h_1[d_up.z + N].y - tz_1.y * h_1[d_up.z + N].x)*isHoppingUp.z;
 
+        d_J_1[idx].x += cheb_n * 2 * (tx_1.x * e_1[d_up.x].y + tx_1.y * e_1[d_up.x].x)*isHoppingUp.x;
+        d_J_1[idx].y += cheb_n * 2 * (ty_1.x * e_1[d_up.y].y + ty_1.y * e_1[d_up.y].x)*isHoppingUp.y;
+        d_J_1[idx].z += cheb_n * 2 * (tz_1.x * e_1[d_up.z].y + tz_1.y * e_1[d_up.z].x)*isHoppingUp.z;
+
+        d_J_1[idx].x += cheb_n * 2 * (tx_1.x * h_1[d_up.x + N].y - tx_1.y * h_1[d_up.x + N].x)*isHoppingUp.x;
+        d_J_1[idx].y += cheb_n * 2 * (ty_1.x * h_1[d_up.y + N].y - ty_1.y * h_1[d_up.y + N].x)*isHoppingUp.y;
+        d_J_1[idx].z += cheb_n * 2 * (tz_1.x * h_1[d_up.z + N].y - tz_1.y * h_1[d_up.z + N].x)*isHoppingUp.z;
+
          // Current contribution from component 2
         d_J[idx].x += cheb_n * 2 * (tx_2.x * e_2[d_up.x].y + tx_2.y * e_2[d_up.x].x)*isHoppingUp.x;
         d_J[idx].y += cheb_n * 2 * (ty_2.x * e_2[d_up.y].y + ty_2.y * e_2[d_up.y].x)*isHoppingUp.y;
@@ -320,16 +328,13 @@ void update_J(
         d_J[idx].y += cheb_n * 2 * (ty_2.x * h_2[d_up.y + N].y - ty_2.y * h_2[d_up.y + N].x)*isHoppingUp.y;
         d_J[idx].z += cheb_n * 2 * (tz_2.x * h_2[d_up.z + N].y - tz_2.y * h_2[d_up.z + N].x)*isHoppingUp.z;
 
-        // Current contribution from component 3
-        /*
-        d_J[idx].x += cheb_n * 2 * (tx_3.x * e_3[d_up.x].y + tx_3.y * e_3[d_up.x].x)*isHoppingUp.x;
-        d_J[idx].y += cheb_n * 2 * (ty_3.x * e_3[d_up.y].y + ty_3.y * e_3[d_up.y].x)*isHoppingUp.y;
-        d_J[idx].z += cheb_n * 2 * (tz_3.x * e_3[d_up.z].y + tz_3.y * e_3[d_up.z].x)*isHoppingUp.z;
-
-        d_J[idx].x += cheb_n * 2 * (tx_3.x * h_3[d_up.x + N].y - tx_3.y * h_3[d_up.x + N].x)*isHoppingUp.x;
-        d_J[idx].y += cheb_n * 2 * (ty_3.x * h_3[d_up.y + N].y - ty_3.y * h_3[d_up.y + N].x)*isHoppingUp.y;
-        d_J[idx].z += cheb_n * 2 * (tz_3.x * h_3[d_up.z + N].y - tz_3.y * h_3[d_up.z + N].x)*isHoppingUp.z;
-        */
+        d_J_2[idx].x += cheb_n * 2 * (tx_2.x * e_2[d_up.x].y + tx_2.y * e_2[d_up.x].x)*isHoppingUp.x;
+        d_J_2[idx].y += cheb_n * 2 * (ty_2.x * e_2[d_up.y].y + ty_2.y * e_2[d_up.y].x)*isHoppingUp.y;
+        d_J_2[idx].z += cheb_n * 2 * (tz_2.x * e_2[d_up.z].y + tz_2.y * e_2[d_up.z].x)*isHoppingUp.z;
+ 
+        d_J_2[idx].x += cheb_n * 2 * (tx_2.x * h_2[d_up.x + N].y - tx_2.y * h_2[d_up.x + N].x)*isHoppingUp.x;
+        d_J_2[idx].y += cheb_n * 2 * (ty_2.x * h_2[d_up.y + N].y - ty_2.y * h_2[d_up.y + N].x)*isHoppingUp.y;
+        d_J_2[idx].z += cheb_n * 2 * (tz_2.x * h_2[d_up.z + N].y - tz_2.y * h_2[d_up.z + N].x)*isHoppingUp.z;
     }
 }
 
@@ -625,7 +630,8 @@ void modkernel(field *modulation, const int N, const Hamiltonian hamiltonian)
 
 //SELF CONCISTENCE LOOP
 void mean_field::selfConsistent(
-    const int *h_geometry, Hamiltonian &hamiltonian, field2 *h_A, field3 *h_J, field *h_F,
+    const int *h_geometry, Hamiltonian &hamiltonian, field2 *h_A, 
+    field3 *h_J, field3 *h_J_1, field3 *h_J_2, field *h_F,
     field2 *h_D_1, field *h_n_up_1, field *h_n_down_1, field2 *h_T_x_1, field2 *h_T_y_1, field2 *h_T_z_1,
     field2 *h_D_2, field *h_n_up_2, field *h_n_down_2, field2 *h_T_x_2, field2 *h_T_y_2, field2 *h_T_z_2,
     //field2 *h_D_3, field *h_n_up_3, field *h_n_down_3, field2 *h_T_x_3, field2 *h_T_y_3, field2 *h_T_z_3,
@@ -711,6 +717,8 @@ void mean_field::selfConsistent(
     field2 *d_A           = nullptr;
     field2 *d_A_new       = nullptr;
     field3 *d_J           = nullptr;
+    field3 *d_J_1         = nullptr;
+    field3 *d_J_2         = nullptr;
     field  *d_F           = nullptr;
     field  *d_modulation  = nullptr;
     
@@ -726,6 +734,8 @@ void mean_field::selfConsistent(
     if(GAUGE_FIELD)
     {
         cudaMalloc(&d_J,           SIZE_3N);
+        cudaMalloc(&d_J_1,         SIZE_3N);
+        cudaMalloc(&d_J_2,         SIZE_3N);
         cudaMalloc(&d_A,           SIZE_N);
         cudaMalloc(&d_A_new,       SIZE_N);
     }
@@ -947,7 +957,7 @@ void mean_field::selfConsistent(
                 update_J<<<dim3(X_BLOCKS,Y_BLOCKS,1), dim3(TPB,1,1)>>>(
                     d_T_x_1, d_T_y_1, d_T_z_1, d_T_x_2, d_T_y_2, d_T_z_2,
                     d_e_prev_1, d_h_prev_1, d_e_prev_2, d_h_prev_2,
-                    d_J,
+                    d_J, d_J_1, d_J_2,
                     d_neighbors,
                     N, hamiltonian.Nx, hamiltonian.Ny, hamiltonian.Nz, i,
                     chebTab[n]);
@@ -1088,8 +1098,12 @@ void mean_field::selfConsistent(
             if(GAUGE_FIELD)
             {
                 cudaMemcpy(h_J, d_J, SIZE_3N, cudaMemcpyDeviceToHost);
+                cudaMemcpy(h_J_1, d_J_1, SIZE_3N, cudaMemcpyDeviceToHost);
+                cudaMemcpy(h_J_2, d_J_2, SIZE_3N, cudaMemcpyDeviceToHost);
                 cudaMemcpy(h_A, d_A, SIZE_N, cudaMemcpyDeviceToHost);
                 io::printField(h_J, "J", N, file);
+                io::printField(h_J_1, "J_1", N, file);
+                io::printField(h_J_2, "J_2", N, file);
                 io::printField(h_A, "A", N, file);
             }
             
@@ -1172,6 +1186,8 @@ void mean_field::selfConsistent(
     if(GAUGE_FIELD)
     {
         cudaMemcpy(h_J, d_J, SIZE_3N, cudaMemcpyDeviceToHost);
+        cudaMemcpy(h_J_1, d_J_1, SIZE_3N, cudaMemcpyDeviceToHost);
+        cudaMemcpy(h_J_2, d_J_2, SIZE_3N, cudaMemcpyDeviceToHost);
         cudaMemcpy(h_A, d_A, SIZE_N, cudaMemcpyDeviceToHost);
         io::printField(h_J, "J", N, file);
         io::printField(h_A, "A", N, file);

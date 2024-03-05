@@ -75,7 +75,7 @@ dist           = str(args.dist)
 ################################
 
 #### Simulations with Mats critical temperature
-T_c = 0.45974743
+T_c = 1 / 2.27
 # SYSTEM PARAMETERS SETUP
 @dataclass
 class Hamiltonian:
@@ -84,11 +84,11 @@ class Hamiltonian:
     t_z    = np.array( [-0.0,-0.0] )
     mu     = np.array( [ 0.0, 0.0] )
     H      = np.array( [ 0.0, 0.0] )
-    V      = np.array( [ 3.2, 1.8] ) # [V11,V22] v
-    Vint   = np.array( [-0.05] ) # [V12] u
+    V      = np.array( [ 2.5, 2.2] ) # [V11,V22] v
+    Vint   = np.array( [ 0.01] ) # [V12] u
     #common parameters
-    T      = 0.5*T_c
-    q      = 0.3
+    T      = 0.6*T_c
+    q      = 0.8
     Bext   = 0.0
     
 
@@ -105,7 +105,7 @@ header_list = [ "#!/bin/bash -l",
                 "#SBATCH --gres=gpu:1",
                 "#SBATCH --time=72:00:00",
                 "#SBATCH --qos=gpu",
-                "#SBATCH --exclude=boltzmann,alpha",
+                "#SBATCH --exclude=boltzmann,alpha,", #feynman,"#oppenheimer",
 #                "#SBATCH --nodelist=dirac",
                 "#SBATCH --clusters=kraken",
                 "#SBATCH --partition=gpu"]

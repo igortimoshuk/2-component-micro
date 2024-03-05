@@ -7,7 +7,9 @@
 namespace mean_field{
 
 extern void selfConsistent(
-    const int *h_geometry, Hamiltonian &hamiltonian, field2 *h_A, field3 *h_J, field *h_F,
+    const int *h_geometry, Hamiltonian &hamiltonian, field2 *h_A, 
+    field3 *h_J, field3 *h_J_1, field3 *h_J_2, 
+    field *h_F,
     field2 *h_D_1, field *h_n_up_1, field *h_n_down_1, field2 *h_T_x_1, field2 *h_T_y_1, field2 *h_T_z_1,
     field2 *h_D_2, field *h_n_up_2, field *h_n_down_2, field2 *h_T_x_2, field2 *h_T_y_2, field2 *h_T_z_2,
     //field2 *h_D_3, field *h_n_up_3, field *h_n_down_3, field2 *h_T_x_3, field2 *h_T_y_3, field2 *h_T_z_3,

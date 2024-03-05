@@ -535,6 +535,93 @@ class dataProcessing:
             plt.savefig(save +".pdf",bbox_inches='tight')
         
         plt.show()
+
+    def plotDelta22(self, save=False):
+        fig, axes = plt.subplots(nrows=2,ncols=2,figsize=(4*2,3.5*2),
+                        gridspec_kw=dict( {'wspace':0.3, 'top':0.8, 'bottom':0.15} ) )
+
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p = axes[0,0].imshow(np.absolute(self.D_1), origin='lower',vmin=np.amin(np.absolute(self.D_1)), vmax = np.amax(np.absolute(self.D_1)), cmap='viridis')
+            axes[0,0].set_ylabel("$y$")
+            axes[0,0].set_xlim(0, self.xlim-1)
+            axes[0,0].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[0,0])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title("$|\Delta_1|$")
+        else:
+            axes[0,0].plot(np.absolute(self.D_1), label=r"$|\Delta_1|$")
+            axes[0,0].set_xlabel("$x$")
+            axes[0,0].set_xlim(0, self.xlim-1)
+            axes[0,0].legend(fontsize=18)
+        
+
+        # Component 2
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p = axes[0,1].imshow(np.absolute(self.D_2), origin='lower',vmin=np.amin(np.absolute(self.D_2)), vmax = np.amax(np.absolute(self.D_2)), cmap='viridis')
+            axes[0,1].set_ylabel("$y$")
+            axes[0,1].set_xlim(0, self.xlim-1)
+            axes[0,1].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[0,1])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title("$|\Delta_2|$")
+            
+        else:
+            axes[0,1].plot(np.absolute(self.D_2), label=r"$|\Delta_2|$")
+            axes[0,1].set_xlabel("$x$")
+            axes[0,1].set_xlim(0, self.xlim-1)
+            axes[0,1].legend(fontsize=18)
+
+        # 1d ticks
+        values = ('-1','-2/3','-1/2','-1/3', '0', '1/3','1/2', '2/3', '1')
+        y_pos = np.linspace(-1,1,len(values))
+
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p=axes[1,0].imshow(np.angle(self.D_1), origin='lower',cmap = 'hsv')
+            axes[1,0].set_ylabel("$y$")
+            axes[1,0].set_xlim(0, self.xlim-1)
+            axes[1,0].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[1,0])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title(r"$\phi_1$")
+        else:
+            axes[1,0].plot(np.angle(self.D_1), label=r"$\phi_1$")
+            axes[1,0].set_xlabel("$x$")
+            axes[1,0].set_xlim(0, self.xlim-1)
+            axes[1,0].legend(fontsize=18)
+            axes[1,0].set_yticks(y_pos, values)       
+    
+
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p=axes[1,1].imshow(np.angle(self.D_2), origin='lower',cmap = 'hsv')
+            axes[1,1].set_ylabel("$y$")
+            axes[1,1].set_xlim(0, self.xlim-1)
+            axes[1,1].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[1,1])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title(r"$\phi_2$")
+        else:
+            axes[1,1].plot(np.angle(self.D_2), label=r"$\phi_2$")
+            axes[1,1].set_xlabel("$x$")
+            axes[1,1].set_xlim(0, self.xlim-1)
+            axes[1,1].legend(fontsize=18)
+            axes[1,1].set_yticks(y_pos, values)
+
+        if save != False:
+            plt.savefig(save +".pdf",bbox_inches='tight')
+        
+        plt.show()
       
 
 
@@ -843,3 +930,84 @@ class dataProcessing:
             axes[2,1].set_xlim(0, self.xlim-1)
             axes[2,1].legend(fontsize=18)
             axes[2,1].set_yticks(y_pos, values)           
+
+    def plotInitialGuess22(self, save=False):
+        fig, axes = plt.subplots(nrows=3,ncols=2,figsize=(4*2,3.5*2),
+                        gridspec_kw=dict( {'wspace':0.3, 'top':0.8, 'bottom':0.15} ) )
+
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p = axes[0,0].imshow(np.absolute(self.D_1_ig), origin='lower',vmin=np.amin(np.absolute(self.D_1_ig)), vmax = np.amax(np.absolute(self.D_1_ig)), cmap='viridis')
+            axes[0,0].set_ylabel("$y$")
+            axes[0,0].set_xlim(0, self.xlim-1)
+            axes[0,0].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[0,0])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title("$|\Delta_1|$")
+        else:
+            axes[0,0].plot(np.absolute(self.D_1_ig), label=r"$|\Delta_1|$")
+            axes[0,0].set_xlabel("$x$")
+            axes[0,0].set_xlim(0, self.xlim-1)
+            axes[0,0].legend(fontsize=18)
+        
+
+        # Component 2
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p = axes[0,1].imshow(np.absolute(self.D_2_ig), origin='lower',vmin=np.amin(np.absolute(self.D_2_ig)), vmax = np.amax(np.absolute(self.D_2_ig)), cmap='viridis')
+            axes[0,1].set_ylabel("$y$")
+            axes[0,1].set_xlim(0, self.xlim-1)
+            axes[0,1].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[0,1])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title("$|\Delta_2|$")
+            
+        else:
+            axes[0,1].plot(np.absolute(self.D_2_ig), label=r"$|\Delta_2|$")
+            axes[0,1].set_xlabel("$x$")
+            axes[0,1].set_xlim(0, self.xlim-1)
+            axes[0,1].legend(fontsize=18)
+
+        # 1d ticks
+        values = ('-1','-2/3','-1/2','-1/3', '0', '1/3','1/2', '2/3', '1')
+        y_pos = np.linspace(-1,1,len(values))
+     
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p=axes[1,0].imshow(np.angle(self.D_1_ig), origin='lower',cmap = 'hsv')
+            axes[1,0].set_ylabel("$y$")
+            axes[1,0].set_xlim(0, self.xlim-1)
+            axes[1,0].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[1,0])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title(r"$\phi_1$")
+        else:
+            axes[1,0].plot(np.angle(self.D_1_ig), label=r"$\phi_1$")
+            axes[1,0].set_xlabel("$x$")
+            axes[1,0].set_xlim(0, self.xlim-1)
+            axes[1,0].legend(fontsize=18)
+            axes[1,0].set_yticks(y_pos, values)
+
+        if(self.dimesionality == 2):
+        #Order parameter modulus
+            
+            p=axes[1,1].imshow(np.angle(self.D_2_ig), origin='lower',cmap = 'hsv')
+            axes[1,1].set_ylabel("$y$")
+            axes[1,1].set_xlim(0, self.xlim-1)
+            axes[1,1].set_ylim(0, self.ylim-1)
+            divider = make_axes_locatable(axes[1,1])
+            cax = divider.append_axes('right', size='5%', pad=0.05)
+            cbar = fig.colorbar(p, cax=cax, orientation='vertical')
+            cbar.ax.set_title(r"$\phi_2$")
+        else:
+            axes[1,1].plot(np.angle(self.D_2_ig), label=r"$\phi_2$")
+            axes[1,1].set_xlabel("$x$")
+            axes[1,1].set_xlim(0, self.xlim-1)
+            axes[1,1].legend(fontsize=18)
+            axes[1,1].set_yticks(y_pos, values)           
